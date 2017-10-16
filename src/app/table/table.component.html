@@ -1,0 +1,86 @@
+<div class="example-container mat-elevation-z8">
+    
+  <mat-toolbar color="primary">
+     <span class="example-spacer"></span>
+    <span *ngIf="selectedMore">Update only one user at the time!</span>
+  <mat-toolbar-row>
+    <span>Third Line</span>
+    <span class="example-spacer"></span>
+    <mat-icon class="example-icon" *ngIf="isAllSelected()" (click)="updateUser()" title="">update</mat-icon>
+    <mat-icon class="example-icon" *ngIf="isAllSelected()" (click)="deleteUser()">delete</mat-icon>
+    <dialog-overview-example></dialog-overview-example>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+  <mat-table #table [dataSource]="dataSource">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+           <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                     [checked]="isAllSelected()"
+                     [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                     (change)="$event ? selection.toggle(row.id) : null"
+                     [checked]="selection.isSelected(row.id)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <!-- ID Column -->
+    <!--<ng-container matColumnDef="userId" ng-hide="true">
+      <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
+    </ng-container>-->
+      <!-- Name Column -->
+    <ng-container matColumnDef="userName">
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+    </ng-container>
+
+    <!-- Progress Column -->
+    <ng-container matColumnDef="Online Sales">
+      <mat-header-cell *matHeaderCellDef> Online Sales </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Store Sales">
+      <mat-header-cell *matHeaderCellDef> Store Sales </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Email Order">
+      <mat-header-cell *matHeaderCellDef> Email Order </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="progress">
+      <mat-header-cell *matHeaderCellDef> Progress </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
+    </ng-container>
+  
+
+    <!-- Color Column -->
+    <!--<ng-container matColumnDef="color">
+      <mat-header-cell *matHeaderCellDef> Color </mat-header-cell>
+      <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.color}} </mat-cell>
+    </ng-container>-->
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="displayChart(row)" style="cursor:pointer;"></mat-row>
+  </mat-table>
+
+  <mat-paginator #paginator
+                [length]="exampleDatabase.data.length"
+                [pageIndex]="0"
+                [pageSize]="5"
+                [pageSizeOptions]="[5, 10, 25, 100]">
+  </mat-paginator>
+</div>
+<app-chart *ngIf="dataChart" [userData]="dataChart"></app-chart>
