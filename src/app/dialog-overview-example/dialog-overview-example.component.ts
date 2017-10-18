@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { UtilsService } from '../utils.service';
 
@@ -10,35 +10,39 @@ import { UtilsService } from '../utils.service';
   templateUrl: 'dialog-overview-example.component.html'
 })
 export class DialogOverviewExample {
-
+  @Output('onReceiveData') public onReceiveData: EventEmitter<any> = new EventEmitter();
   // animal: string;
   // name: string;
   data;
+  newUser;
 
   constructor(public dialog: MatDialog, private utils:UtilsService) {}
 
-  openDialog(id): void {
-    
-    
+  openDialog(user): void {
+      //new DialogOverviewExampleDialog()
+    let info = { user: null };
+    if (user) {
+      info.user = user;
+      
+    }
+
     let dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
       width: '850px',
-      // data: { name: this.name, animal: this.animal }
+      data: info
     });
 
     dialogRef.afterClosed().subscribe(result => {
       this.data = result
-      if(id){
-        console.log('id',id)
-        this.data.id = id;
+          
+      
+      if(!user && this.data){
+        this.utils.postUser(this.data).subscribe(result => {
+          this.newUser = result;
+          this.onReceiveData.next(result.data);
+        });
+      }else if(user && this.data){
+        this.utils.updateUser(user._id, user).subscribe(result=> console.log(result))
       }
-      if(this.data){
-        this.utils.postUser(this.data);
-      }
-    
-      // console.log('The dialog was closed', result);
-        
-
-      // this.animal = result;
     });
   }
 
@@ -48,7 +52,8 @@ export class DialogOverviewExample {
   selector: 'dialog-overview-example-dialog',
   templateUrl: 'dialog-overview-example-dialog.html',
 })
-export class DialogOverviewExampleDialog {
+export class DialogOverviewExampleDialog implements OnInit {
+
    user = {
     name: '',
     online_sales: '',
@@ -58,10 +63,14 @@ export class DialogOverviewExampleDialog {
 
   constructor(
     public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
 
-    addUser(): void {
-      // console.log('new user', this.user);
+    ngOnInit() {
+      if(this.data.user !== null ){
+        this.user = this.data.user;
+        // console.log(this.data.user);
+      }
+      
     }
 
   onNoClick(): void {

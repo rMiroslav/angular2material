@@ -6,81 +6,58 @@
   <mat-toolbar-row>
     <span>Third Line</span>
     <span class="example-spacer"></span>
-    <mat-icon class="example-icon" *ngIf="isAllSelected()" (click)="updateUser()" title="">update</mat-icon>
-    <mat-icon class="example-icon" *ngIf="isAllSelected()" (click)="deleteUser()">delete</mat-icon>
-    <dialog-overview-example></dialog-overview-example>
+    <!--<mat-icon class="example-icon" (click)="updateUser()" title="">update</mat-icon>-->
+    <!--<mat-icon class="example-icon" (click)="deleteUser()">delete</mat-icon>-->
+    <dialog-overview-example (onReceiveData)="refreshData($event)"></dialog-overview-example>
     </mat-toolbar-row>
 </mat-toolbar>
 
-  <mat-table #table [dataSource]="dataSource">
-
-    <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-
-           <!-- Checkbox Column -->
-    <ng-container matColumnDef="select">
-      <mat-header-cell *matHeaderCellDef>
-        <mat-checkbox (change)="$event ? masterToggle() : null"
-                     [checked]="isAllSelected()"
-                     [indeterminate]="selection.hasValue() && !isAllSelected()">
-        </mat-checkbox>
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-        <mat-checkbox (click)="$event.stopPropagation()"
-                     (change)="$event ? selection.toggle(row.id) : null"
-                     [checked]="selection.isSelected(row.id)">
-        </mat-checkbox>
-      </mat-cell>
+  <mat-table #table [dataSource]="dataSource | orderBy" matSort>
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-cell *matCellDef="let row" (click)="displayChart(row)"> {{row.name}} </mat-cell>
     </ng-container>
 
-    <!-- ID Column -->
-    <!--<ng-container matColumnDef="userId" ng-hide="true">
-      <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
-    </ng-container>-->
-      <!-- Name Column -->
-    <ng-container matColumnDef="userName">
-      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+    
+    <ng-container matColumnDef="online sales">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Online Sales </mat-header-cell>
+      <mat-cell *matCellDef="let row" (click)="displayChart(row)"> {{row.online_sales}} </mat-cell>
     </ng-container>
 
-    <!-- Progress Column -->
-    <ng-container matColumnDef="Online Sales">
-      <mat-header-cell *matHeaderCellDef> Online Sales </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
+    <ng-container matColumnDef="store sales">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Store Sales </mat-header-cell>
+      <mat-cell *matCellDef="let row" (click)="displayChart(row)"> {{row.store_sales}} </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="Store Sales">
-      <mat-header-cell *matHeaderCellDef> Store Sales </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
+    <ng-container matColumnDef="email order">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Email Order </mat-header-cell>
+      <mat-cell *matCellDef="let row" (click)="displayChart(row)"> {{row.mail_order}} </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="Email Order">
-      <mat-header-cell *matHeaderCellDef> Email Order </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
+    <ng-container matColumnDef="update">
+      <mat-header-cell *matHeaderCellDef>Update</mat-header-cell>
+      <mat-cell *matCellDef="let row"><mat-icon class="example-icon" (click)="updateUser(row)">update</mat-icon></mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="progress">
-      <mat-header-cell *matHeaderCellDef> Progress </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
+     <ng-container matColumnDef="delete">
+      <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+      <mat-cell *matCellDef="let row"><mat-icon class="example-icon" (click)="deleteUser(row)">delete</mat-icon></mat-cell>
     </ng-container>
   
 
-    <!-- Color Column -->
-    <!--<ng-container matColumnDef="color">
-      <mat-header-cell *matHeaderCellDef> Color </mat-header-cell>
-      <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.color}} </mat-cell>
-    </ng-container>-->
-
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="displayChart(row)" style="cursor:pointer;"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"  style="cursor:pointer;"></mat-row>
+     
+     
   </mat-table>
 
   <mat-paginator #paginator
-                [length]="exampleDatabase.data.length"
+                [length]="data.length"
                 [pageIndex]="0"
-                [pageSize]="5"
-                [pageSizeOptions]="[5, 10, 25, 100]">
+                [pageSize]="pageSize"
+                [pageSizeOptions]="pageSizeOptions"
+                (selectChange)="changePage($event)"
+                (page)="onPaginateChange($event)">
   </mat-paginator>
 </div>
 <app-chart *ngIf="dataChart" [userData]="dataChart"></app-chart>

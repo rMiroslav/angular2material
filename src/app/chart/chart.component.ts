@@ -22,10 +22,10 @@ export class ChartComponent implements OnInit {
   }
 
   ngAfterViewInit(){
-      this.doughnutChartData = [];
-    this.userData.map(result => 
-      this.doughnutChartData.push(result)
-    )
+    //   this.doughnutChartData = [];
+    // this.userData.map(result => 
+    //   this.doughnutChartData.push(result)
+    // )
     
     console.log('after')
   }
