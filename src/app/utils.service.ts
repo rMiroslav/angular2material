@@ -45,8 +45,10 @@ export class UtilsService {
 
   updateUser(id, body){
     const url = 'http://localhost:3000/_api/update/'
-    return this.http.put( url + id, body).map(result=>
-      this.userUpdate = result
+    return this.http.put( url + id, body).map(result=>{
+      return result.json()
+    }
+      
     )
   }
 

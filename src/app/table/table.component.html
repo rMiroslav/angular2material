@@ -12,7 +12,7 @@
     </mat-toolbar-row>
 </mat-toolbar>
 
-  <mat-table #table [dataSource]="dataSource | orderBy" matSort>
+  <mat-table #table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
       <mat-cell *matCellDef="let row" (click)="displayChart(row)"> {{row.name}} </mat-cell>

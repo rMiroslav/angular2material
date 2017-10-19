@@ -1,5 +1,6 @@
 import { Component, Inject, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { FormGroup, FormControl } from '@angular/forms';
 import { UtilsService } from '../utils.service';
 
 /**
@@ -53,7 +54,10 @@ export class DialogOverviewExample {
   templateUrl: 'dialog-overview-example-dialog.html',
 })
 export class DialogOverviewExampleDialog implements OnInit {
-
+  // userForm = new FormGroup({
+  //   name: new FormControl(),
+  //   online_sales
+  // })
    user = {
     name: '',
     online_sales: '',
